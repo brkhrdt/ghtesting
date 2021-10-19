@@ -12,15 +12,15 @@ class QueryRepos:
         pass
 
     @staticmethod
-    def build_query(endCursor=None) -> str:
+    def build_query(dateRange, endCursor=None) -> str:
         '''
         Search for repos with >100 stars
         Retuns max repos and cursor to continue search
         '''
-        searchstr = 'query: "stars:>100", type: REPOSITORY, first: 100'
+        searchstr = f'query: "created:{dateRange} stars:>1000", type: REPOSITORY, first: 100'
         if endCursor != None:
             log.debug(f"Using endCursor {endCursor}")
-            searchstr = f'query: "stars:>100", type: REPOSITORY, first: 100, after:"{endCursor}"'
+            searchstr = f'query: "created:{dateRange} stars:>1000", type: REPOSITORY, first: 100, after:"{endCursor}"'
 
         # Insert searchstr into query
         query_repos_str = '''
@@ -132,19 +132,6 @@ class GHQuery:
                 sleeptime = retries * 2
                 log.warning(f'Query failed (code {code}). Sleeping {sleeptime} sec and retrying... (retry {retries})')
                 time.sleep(sleeptime)
-
-
-        # retries = 1
-        # while response.status_code == 502:
-        #     sleeptime = retries * 2
-        #     time.sleep(sleeptime)
-        #     log.warning(f"Query failed (code 502). Sleeping {sleeptime} sec and retrying... (retry {retries})")
-        #     retries = retries + 1
-        #     response = requests.post(self.api, json={'query': gql}, headers=self.headers)
-
-        # Code 200 is success
-        # if response.status_code != 200:
-        #     raise Exception("Query failed to run by returning code of {}. {}".format(response.status_code, gql))
 
         log.info("Query successful.")
         jsondata = response.json()
