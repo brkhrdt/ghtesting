@@ -73,7 +73,15 @@ class QueryRepos:
                     }
                     }
                 }
-                object(expression: "HEAD:") {
+                rootdir: object(expression: "HEAD:") {
+                    ... on Tree {
+                    entries {
+                        name
+                        type
+                    }
+                    }
+                }
+                workflowdir: object(expression: "HEAD:.github/workflows/") {
                     ... on Tree {
                     entries {
                         name
@@ -82,9 +90,9 @@ class QueryRepos:
                     }
                 }
                 }
+                }
             }
             }
-        }
         }
         ''' % searchstr
         log.debug(f"Query to be run: {query_repos_str}")
@@ -92,14 +100,15 @@ class QueryRepos:
 
 
 class GHQuery:
-    def __init__(self, token, endCursor=None):
+    def __init__(self, dateRange, token, endCursor=None):
        self.token = token
        self.headers = {"Authorization": "bearer {}".format(self.token)}
        self.api = 'https://api.github.com/graphql'
        self.endCursor = endCursor# pagination, start next query on next page
+       self.dateRange = dateRange
 
     def run_query(self):
-        gql = QueryRepos.build_query(self.endCursor)
+        gql = QueryRepos.build_query(self.dateRange, self.endCursor)
         if self.endCursor:
             log.info(f'Query from cursor "{self.endCursor}"')
         else:
