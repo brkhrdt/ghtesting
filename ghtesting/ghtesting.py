@@ -24,14 +24,14 @@ seen_repos = {}
 
 log.info('Beginning to query GitHub repositories...')
 
-dateranges = [1] # fill in
+dateranges = ["2010-01-01..2011-01-01"] # fill in
 
 for daterange in dateranges:
     log.info(f'Querying repos within {daterange}')
 
     search = {
         'topic': 'vue',
-        'stars': '>100'
+        'stars': '>100',
         'created': daterange
     }
     ghq = GHQuery(search, tokens[0])
