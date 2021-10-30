@@ -17,19 +17,24 @@ log.addLevelName(log.FATAL, 'FATAL')
 tokens = os.environ['GITHUB_TOKENS'].split(' ')
 
 # Locally store github repo data
-ghdb = GHDatabase()
+ghdb = GHDatabase('github', 'webframework_repos')
 
 
 seen_repos = {}
 
 log.info('Beginning to query GitHub repositories...')
 
-dateranges = [] # fill in
+dateranges = [1] # fill in
 
 for daterange in dateranges:
     log.info(f'Querying repos within {daterange}')
 
-    ghq = GHQuery(daterange, tokens[0])
+    search = {
+        'topic': 'vue',
+        'stars': '>100'
+        'created': daterange
+    }
+    ghq = GHQuery(search, tokens[0])
     hasNextPage = True
     while hasNextPage:
         # if there was a cursor from previous run then it gets used inside run_query()
