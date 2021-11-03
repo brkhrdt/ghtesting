@@ -33,5 +33,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        setenv GITHUB_TOKENS "${{ secrets.GITHUB_TOKEN }}"
+        export GITHUB_TOKENS="${{ secrets.GITHUB_TOKEN }}"
         pytest
