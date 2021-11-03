@@ -16,3 +16,6 @@ class GHDatabase:
 
     def repos_count(self):
         return self.col.count_documents({})
+
+    def get_repos(self):
+        return self.col.find({})
