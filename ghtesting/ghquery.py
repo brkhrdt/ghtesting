@@ -15,7 +15,7 @@ class GHQuery:
 
        # Stringify search parameters to insert into graphql variable
        self.searchparams = ''.join([f'{k}:{v} ' for k, v in searchparams.items()])
-       log.debug(f'Search query: {self.searchparams}')
+       log.info(f'Search query: {self.searchparams}')
 
     def run_query(self):
 

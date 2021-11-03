@@ -24,21 +24,34 @@ seen_repos = {}
 
 log.info('Beginning to query GitHub repositories...')
 
-dateranges = ["2010-01-01..2011-01-01"] # fill in
+dateranges = [
+    "2008-01-01..2008-06-01", "2008-06-01..2009-01-01",
+    "2009-01-01..2009-06-01", "2009-06-01..2010-01-01",
+    "2010-01-01..2010-06-01", "2010-06-01..2011-01-01",
+    "2011-01-01..2011-06-01", "2011-06-01..2012-01-01",
+    "2012-01-01..2012-06-01", "2012-06-01..2013-01-01",
+    "2013-01-01..2013-06-01", "2013-06-01..2014-01-01",
+    "2014-01-01..2014-06-01", "2014-06-01..2015-01-01",
+    "2015-01-01..2015-06-01", "2015-06-01..2016-01-01",
+    "2016-01-01..2016-06-01", "2016-06-01..2017-01-01",
+    "2017-01-01..2017-06-01", "2017-06-01..2018-01-01",
+    "2018-01-01..2018-06-01", "2018-06-01..2019-01-01",
+    "2019-01-01..2019-06-01", "2019-06-01..2020-01-01",
+    "2020-01-01..2020-06-01", "2020-06-01..2021-01-01",
+    "2021-01-01..2021-06-01", "2021-06-01..2022-01-01",
+    ]
 
-for daterange in dateranges:
-    log.info(f'Querying repos within {daterange}')
+topics = ['angular', 'react', 'vue']
 
-    search = {
-        'topic': 'vue',
-        'stars': '>100',
-        'created': daterange
-    }
+def queryRepos(search: dict):
     ghq = GHQuery(search, tokens[0])
     hasNextPage = True
     while hasNextPage:
         # if there was a cursor from previous run then it gets used inside run_query()
         ret, jsondata = ghq.run_query()
+        num_repos_found = jsondata['data']['search']['repositoryCount']
+        if num_repos_found > 1000:
+            raise Exception("Query exceeds the maximum repos returnable in one query (1000 repos).")
 
         queriedAt = datetime.datetime.now().replace(microsecond=0).isoformat()+'Z'
         for reponode in jsondata['data']['search']['edges']:
@@ -56,5 +69,17 @@ for daterange in dateranges:
         hasNextPage = jsondata['data']['search']['pageInfo']['hasNextPage']
         log.info(f'Rate: {rateLimit["remaining"]}/{rateLimit["limit"]} NodeCount: {rateLimit["nodeCount"]}, ResetsAt: {rateLimit["resetAt"]}')
         log.info(f'hasNextPage: {hasNextPage}')
+
+for topic in topics:
+    for daterange in dateranges:
+        log.info(f'Querying repos within {daterange}')
+
+        searchparams = {
+            'topic': topic,
+            'stars': '>100',
+            'created': daterange
+        }
+
+        queryRepos(searchparams)
 
 exit()
