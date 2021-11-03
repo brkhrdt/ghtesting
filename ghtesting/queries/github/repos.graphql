@@ -1,0 +1,74 @@
+query($search: String!, $after:String) {
+    rateLimit {
+        limit
+        cost
+        remaining
+        nodeCount
+        resetAt
+    }
+    search(query: $search, type: REPOSITORY, first: 100, after: $after) {
+        repositoryCount
+        pageInfo {
+            startCursor
+            hasNextPage
+            endCursor
+        }
+        edges {
+            node {
+                ... on Repository {
+                    nameWithOwner
+                    url
+                    description
+                    createdAt
+                    updatedAt
+                    pushedAt
+                    isFork
+                    parent {
+                        id
+                    }
+                    isMirror
+                    stargazers {
+                        totalCount
+                    }
+                    primaryLanguage {
+                        name
+                    }
+                    languages(first: 100) {
+                        edges {
+                            node {
+                                name
+                            }
+                            size
+                        }
+                        totalSize
+                    }
+                    repositoryTopics(first: 100) {
+                        edges {
+                            node {
+                                topic {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                    rootdir: object(expression: "HEAD:") {
+                        ... on Tree {
+                            entries {
+                                name
+                                type
+                            }
+                        }
+                    }
+                    workflowdir: object(expression: "HEAD:.github/workflows/") {
+                        ... on Tree {
+                            entries {
+                                name
+                                type
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
