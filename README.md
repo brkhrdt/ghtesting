@@ -1,3 +1,5 @@
+[![Python application](https://github.com/brkhrdt/testing-on-github/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/brkhrdt/testing-on-github/actions/workflows/ci.yml)
+
 # Testing on GitHub
 
 ## MongoDB
