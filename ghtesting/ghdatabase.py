@@ -14,8 +14,19 @@ class GHDatabase:
                             , {'$set': repojson}
                             , upsert=True)
 
+    def append_to_repo(self, name, jsondata):
+        self.col.update_one({'_id': name}
+                            , {'$set': jsondata}
+                            , upsert=True)
+
     def repos_count(self):
         return self.col.count_documents({})
 
+    def get_repos_by_name(self, name):
+        return self.col.find({'_id': name})[0]
+
     def get_repos(self):
         return self.col.find({})
+
+    def drop_database(self, dbname):
+        self.client.drop_database(dbname)
