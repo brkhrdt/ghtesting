@@ -2,8 +2,8 @@ import pymongo
 import logging as log
 
 class GHDatabase:
-    def __init__(self, db: str, collection: str):
-        self.client = pymongo.MongoClient("mongodb://localhost:27017/")
+    def __init__(self, db: str, collection: str, connectionString="mongodb://localhost:27017/"):
+        self.client = pymongo.MongoClient(connectionString)
         self.db = self.client[db]
         if collection not in self.db.list_collection_names():
             self.db.create_collection(collection, capped=False) # unlimited documents
