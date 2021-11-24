@@ -17,7 +17,7 @@ GUI to view database: `mongodb-compass`
 Run the following in your terminal before starting a jupyter notebook
 
 ```sh
-export CONNECTION_STRING=<connectionString>
+export CONNECTION_STRING="<connectionString>"
 ```
 
 ## Running the Query
