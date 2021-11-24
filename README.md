@@ -13,22 +13,12 @@ mongod --noauth --dbpath $PWD/mongo/data/db
 
 GUI to view database: `mongodb-compass`
 
+### Connecting to database
+Run the following in your terminal before starting a jupyter notebook
 
-### Database Dumping and Restore
-
-Dump:
-``` sh
-mongodump --db DataBaseName
+```sh
+export CONNECTION_STRING="<connectionString>"
 ```
-
-Restore:
-``` sh
-# Copy json and bson files to /path/to/databasename
-mongorestore --db DataBaseName /path/to/DataBaseName
-```
-
-[Source](   https://stackoverflow.com/questions/7232461/how-can-i-transfer-a-mongodb-database-to-another-machine-that-cannot-see-the-fir)
-
 
 ## Running the Query
 
