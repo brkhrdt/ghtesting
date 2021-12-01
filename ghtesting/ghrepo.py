@@ -12,6 +12,7 @@ class GHRepo:
         self._rootdir = None
         self._url = None
         self._badge_urls = None
+        self._codecov_reports = []
 
     @property
     def name(self):
@@ -24,6 +25,10 @@ class GHRepo:
         if self._stars is None:
             self._stars = self.json['stargazers']['totalCount']
         return self._stars
+    
+    @property
+    def codecov_reports(self):
+        return self._codecov_reports
 
     @property
     def primarylanguage(self):
@@ -139,3 +144,6 @@ class GHRepo:
                 matched_services.append(service)
 
         return sorted(set(matched_services)), unmatched_urls
+
+    def set_codecov_reports(self, reports):
+        self._codecov_reports = reports
