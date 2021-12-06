@@ -12,6 +12,31 @@ from ghrepo import GHRepo
 with open('../data/final_reports.pickle', 'rb') as f:
     final_reports = pickle.load(f)
 
+service_urls = {
+    r'.*travis-ci.(?:org|com).*': 'travisci',
+    r'.*img.shields.io/travis.*': 'travisci',
+    r'.*circleci.com.*': 'circleci',
+    r'.*img.shields.io/circleci.*': 'circleci',
+    r'.*github.com/.*/workflows/.*': 'github',
+    r'.*img.shields.io/github/workflow.*': 'github',
+    r'.*ci.appveyor.com.*': 'appveyorci',
+    r'.*img.shields.io/appveyor/ci/.*': 'appveyorci',
+    r'.*saucelabs.com.*': 'saucelabs',
+    r'.*dev.azure.com.*': 'azure_pipelines',
+    r'.*visualstudio.com/.*/build.*': 'azure_pipelines',
+    r'.*app.bitrise.io.*': 'bitrise',
+    r'.*badge.buildkite.com.*': 'buildkite',
+    r'.*codeship.com.*': 'codeship',
+    r'.*img.shields.io/codeship/.*': 'codeship',
+    r'.*gitlab.com/.*/badges/.*/pipeline.svg': 'gitlab',
+    r'.*gitlab.com/.*/badges/.*/build.svg': 'gitlab',
+    r'.*semaphoreci.com.*': 'semaphoreci',
+    r'.*api.shippable.com.*': 'shippable',
+    r'.*img.shields.io/shippable/.*': 'shippable',
+    r'.*teamcity.jetbrains.com/.*/build.*': 'teamcity',
+    r'.*app.wercker.com.*': 'wercker',
+}
+    
 def get_repository_path(repo):
     return os.path.join('repositories', repo.name.split('/')[1])
     
@@ -30,15 +55,17 @@ def get_webframework(repo):
     if 'react' in repo.topics:
         return 'React'
 
-def get_contributors(repo, report):
-    git = Repo(get_repository_path(repo))
+def get_contributors_by_commit_id(git, commit_id):
     branch = git.active_branch.name
-    print(report['commitid'])
-    git.git.checkout(report['commitid'])
+    git.git.checkout(commit_id)
     log = git.git.log()
     authors = [i.strip() for i in re.findall(r'Author: (.*)?<.*?>\n', log)]
     git.git.checkout(branch)
     return Counter(authors)
+    
+def get_contributors(repo, report):
+    git = Repo(get_repository_path(repo))
+    return get_contributors_by_commit_id(git, report['commitid'])
 
 def get_branch(repo):
     return Repo(get_repository_path(repo)).active_branch.name
