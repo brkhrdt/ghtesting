@@ -5,6 +5,7 @@ class GHRepo:
     def __init__(self, json):
         self.json = json
         self._name = None
+        self._isfork = None
         self._stars = None
         self._primarylanguage = None
         self._languages = None
@@ -12,17 +13,34 @@ class GHRepo:
         self._rootdir = None
         self._url = None
         self._badge_urls = None
+        self._issue_count = None
+        self._fork_count = None
+        self._commit_count = None
+        self._created_at = None
+        self._pushed_at = None
+        self._auto_merge_allowed = None
+        self._funding_links = None
+        self._is_archived = None
 
     @property
     def name(self):
         if self._name is None:
-            self._name = self.json['_id']
+                self._name = self.json['_id']
         return self._name
+
+    @property
+    def isfork(self):
+        if self._isfork is None:
+                self._isfork = self.json['isFork']
+        return self._isfork
 
     @property
     def stars(self):
         if self._stars is None:
-            self._stars = self.json['stargazers']['totalCount']
+            try:
+                self._stars = self.json['stargazers']['totalCount']
+            except:
+                self._stars = None
         return self._stars
 
     @property
@@ -130,6 +148,8 @@ class GHRepo:
         matched_services = list()
         unmatched_urls = list()
 
+        if self.badge_urls is None:
+            return None
 
         for url in self.badge_urls:
             service = self._match_url_to_service(url)
@@ -139,3 +159,62 @@ class GHRepo:
                 matched_services.append(service)
 
         return sorted(set(matched_services)), unmatched_urls
+
+    @property
+    def issue_count(self):
+        try:
+            self._issue_count = self.json['issues']['totalCount']
+        except:
+            self._issue_count = None
+        return self._issue_count
+
+    @property
+    def fork_count(self):
+        try:
+            self._fork_count = self.json['forkCount']
+        except:
+            self._fork_count = None
+        return self._fork_count
+
+    @property
+    def commit_count(self):
+        try:
+            self._commit_count = self.json['defaultBranchRef']['target']['history']['totalCount']
+        except:
+            self._commit_count = None
+        return self._commit_count
+
+
+    @property
+    def auto_merge_allowed(self):
+        try:
+            self._auto_merge_allowed = self.json['autoMergeAllowed']
+        except:
+            self._auto_merge_allowed = None
+        return self._auto_merge_allowed
+
+    @property
+    def created_at(self):
+        try:
+            self._created_at = self.json['createdAt']
+        except:
+            self._created_at = None
+        return self._created_at
+
+    @property
+    def pushed_at(self):
+        try:
+            self._pushed_at = self.json['pushedAt']
+        except:
+            self._pushed_at = None
+        return self._pushed_at
+
+    @property
+    def funding_links(self):
+        try:
+            self._funding_links = list()
+            for link in self.json['fundingLinks']:
+                self._funding_links.append(link['url'])
+        except:
+            self._funding_links = None
+        return self._funding_links
