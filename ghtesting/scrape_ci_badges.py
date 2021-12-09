@@ -64,7 +64,7 @@ for repojson in db.get_repos():
     count = count + 1
 
     if repo.badge_urls is None:
-        print('  getting badges...')
+        print(f'  getting badges for {repo.name}...')
         badges = extract_readme_badges(repo.url)
         # print(badges)
         db.append_to_repo(repo.name, {'badges': badges})

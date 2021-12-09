@@ -21,7 +21,7 @@ class GHQuery:
 
         # Read graphql query from file
         with open(os.path.join(os.path.dirname(__file__),
-                               "queries/github/repos.graphql")) as gqlfile:
+                               "queries/github/repos2.graphql")) as gqlfile:
             gql = gqlfile.read()
             log.debug(f'Read github repos graphql query:\n{gql}\n')
 
