@@ -8,6 +8,7 @@ from collections import Counter
 from git import Repo
 from ghdatabase import GHDatabase
 from ghrepo import GHRepo
+from datetime import datetime
 
 with open('../data/final_reports.pickle', 'rb') as f:
     final_reports = pickle.load(f)
@@ -44,7 +45,7 @@ def get_repos():
     # get list of repos
     db = GHDatabase('ecs260', 'webframework_repos', os.environ['CONNECTION_STRING'])
     repos = [GHRepo(i) for i in db.get_repos()]
-    repos = [repo for repo in repos if repo.name in final_reports]
+    repos = [repo for repo in repos if os.path.exists(get_repository_path(repo))]
     return repos
 
 def get_webframework(repo):
@@ -100,5 +101,6 @@ def get_metrics(report):
     totals = report['totals']
     metrics = {}
     for k, v in metric_map.items():
-        metrics[k] = totals[v]
+        if k in totals:
+            metrics[k] = float(totals[v])
     return metrics
